@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <ul id="app">
+
+    </ul>
+</body>
+<script> 
+    /*
+    * DocumentFragments是DOM节点。它们不是主DOM树的一部分 简称虚拟DOM节点
+    *
+    * 用法:
+    *   创建虚拟DOM节点 将元素附加到虚拟节点上 然后将虚拟节点附加到DOM树上
+    *   虚拟节点被其所有子元素所代替
+    * 好处:
+    *   因为虚拟DOM存在于内存中 并不在DOM树上
+    *   所以将子元素插到虚拟DOM时不会引起页面回流
+    *   性能相当高
+    * */
+    let ul=document.querySelector('#app'),
+        frgm=document.createDocumentFragment();
+    const dataList=['111','222','333'];
+    dataList.forEach((val)=>{
+        let li=document.createElement('li');
+        li.textContent=val;
+        frgm.appendChild(li);
+    });
+    ul.appendChild(frgm);
+
+</script>
+</html>

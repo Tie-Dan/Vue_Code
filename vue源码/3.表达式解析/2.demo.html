@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/observer.js"></script>
+    <script src="../js/watcher.js"></script>
+    <script src="../js/compile.js"></script>
+    <script src="../js/mvvm.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div>{{name}}</div>
+    </div>
+    <script>
+        let vm =new MVVM({
+            el:"#app",
+            data:{
+                name:'123'
+            }
+        });
+        console.log(vm)
+    </script>
+</body>
+</html>

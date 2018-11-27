@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../js/observer.js"></script>
+    <script src="../js/watcher.js"></script>
+    <script src="../js/compile.js"></script>
+    <script src="../js/mvvm.js"></script>
+</head>
+<body>
+    <div id="app">
+        {{aaa}}
+    </div>
+</body>
+<script>
+    
+   let vm =new MVVM({
+        el:"#app",
+        data:{
+            aaa:"sp",
+            bbb:{
+                name:'bbb'
+            }
+        },
+        methods:{
+            
+        }
+    })
+    console.log(vm)//查看所有的dep
+    
+    /*
+    bind 什么时候被调用 watcher 什么时候被创建 
+    除了事件指令全部都调用
+    */ 
+    
+</script>
+</html>

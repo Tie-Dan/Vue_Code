@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="obox">   
+        <span>我是span</span>
+        <p>我是p标签</p>
+        <div>我是div</div>
+    </div>
+</body>
+<script>
+    var oDiv=document.querySelector('#obox');
+    var childs=oDiv.childNodes;
+    //nodeType 3 文本节点   1 标签节点
+    console.log(childs);
+</script>
+</html>

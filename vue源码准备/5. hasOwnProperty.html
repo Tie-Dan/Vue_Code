@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <!--所有继承了 Object 的对象都会继承到 
+        hasOwnProperty 方法这个方法可以用来检测
+        一个对象是否含有特定的自身属性(相当于私有属性)；和 in 运算符不同，
+        该方法会忽略掉那些从原型链上继承到的属性。 
+    hasOwnProperty()函数用于指示一个对象自身(不包括原型链)是否具有指定名称的属性。
+    如果有，返回true，否则返回false。
+    它能帮你指向你当前循环的对象，而过滤掉原型链上其它对象，
+    因为在工作中我们很难保证其他人是否会修改原型链，
+    这样做会更为保险
+    -->
+</body>
+<script>    
+ var obj={
+     name:'Tiedan',
+     age:18
+ };
+
+ console.log(obj.hasOwnProperty('age'));
+
+ var arr=[1,2,3,4];
+
+ console.log(arr.hasOwnProperty('slice'));
+
+ console.log('slice' in arr);   
+ 
+//1.是它的属性 2.不是私有的
+ function hasPubProperty(arr,obj){
+     return  obj in arr && arr.hasOwnProperty(obj)
+ }
+console.log(hasPubProperty(arr,'slice'));
+console.log(hasPubProperty(arr,'length'));
+</script>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+</body>
+<script>
+    //拥有length属性
+    //不具有数组所具有的方法
+    //常见的类数组有arguments和NodeList
+
+    //1.Array.prototype.slice.call()
+    //这种方法是借用了数组原型中的slice方法 返回一个数组
+    var toArray = function (s) {
+        try {
+            //Array.prototype.slice==[].slice
+            //return [].slice.call(s)
+            return Array.prototype.slice.call(s);
+        } catch (s) {
+            var arr = [];
+            for (var i = 0, len = s.length; i < len; i++) {
+                arr[i] = s[i];
+            }
+            return arr;
+        }
+    }
+    //2.Array.from()是Es6中新增的方法 
+    //可以将两类对象转为数组 (类数组对象和可遍历对象)   (包括Es6新增的数据机构set和map)
+    var arrayLike = {
+        '0': 'a',
+        '1': 'b',
+        '2': 'c',
+        length: 3
+    };
+    var arr = Array.from(arrayLike);//[1,2,3]
+    //把NodeList对象转换为数组，然后使用数组的forEach方法
+    var ps = document.querySelectorAll('p');
+    /* Array.from(ps).forEach(p){
+        console.log(p);
+    } */
+    ///转换arguments对象为数组
+    function foo(){
+        var args = Array.from(arguments);
+        //...
+    }
+    //只要是部署了Iterator接口的数据结构，Array.from都能将其转换为数组
+ /*
+    Array
+    Map
+    Set
+    String
+    TypedArray
+    TypedArray是一种通用的固定长度缓冲区类型，允许读取缓冲区中的二进制数据。
+    其在webGL规范中被引入用于解决Javascript处理二进制数据的问题。
+    函数的 arguments 对象
+    NodeList 对象
+    对象没有遍历接口 因为对象那个属性先后 需要开发者手动制定
+ */  
+    Array.from('hello');  //['h','e','l','l','o']
+    
+    //3.扩展运算符 (...)
+    //arguments
+    function foo(){
+        var args=[...arguments];
+        console.log(args);
+    }
+    //nodeList
+    console.log([...document.querySelectorAll('p')]);
+</script>
+
+</html>

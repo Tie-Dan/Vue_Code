@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/observer.js"></script>
+    <script src="../js/watcher.js"></script>
+    <script src="../js/compile.js"></script>
+    <script src="../js/mvvm.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div>{{name}}</div>
+    </div>
+    <script>
+        let vm =new MVVM({
+            el:"#app",
+            data:{
+                name:'123',
+                age:{
+                    haha:456
+                }
+            }
+        });
+        /* 
+        1.数据代理  data中的所有数据交给vm实例来处理
+        当读取vm下的属性时 触发get方法 获取_data中对应的数据
+            vm.属性=xxx设置时 触发set方法 对_data中对应的属性进行赋值
+        2.操作data数据更加方便
+        */
+        console.log(vm.name)
+        vm.name='tiedan';
+        console.log(vm._data.name)
+    </script>
+</body>
+</html>
