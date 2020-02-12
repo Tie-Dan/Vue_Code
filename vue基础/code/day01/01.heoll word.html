@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 1.提供容器 -->
+    <div id="app">
+        <input type="text" v-model="str">
+        <p>{{str}}</p>
+    </div>
+    <!-- 2.引入 -->
+    <script src="./vue.js"></script>
+    <script>
+        // 模拟ajax返回的数据
+        let str = "abc"
+        // 3.实例化Vue对象
+
+        let vm = new Vue({
+            // 4.设置Vue的选项
+            el: "#app",
+            data: {
+                str: str
+            }
+        })
+    </script>
+</body>
+
+</html>

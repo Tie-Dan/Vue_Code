@@ -1,0 +1,9 @@
+/*给相关html元素做样式初始化操作
+  在一般的vue文件中，如果样式控制受限，可以通过此文件控制
+*/
+html,body,#app{
+  height:100%;
+  margin:0; 
+  padding:0;
+  min-width:1200px;
+}

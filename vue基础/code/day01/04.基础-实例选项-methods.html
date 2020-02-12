@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <p>{{count}}</p>
+        {{fn()}}
+        <button v-on:click="fn">点击</button>
+    </div>
+
+    <script src="./vue.js"></script>
+    <script>
+        let vm = new Vue({
+            el: "#app",
+            data: {
+                count: 100
+            },
+            /* 
+            方法声明:
+            1. methods:{方法名:函数体}
+            2. methods中的方法fn 可以通过vm.fn()
+            3. methods中的方法 内部有一个关键字 this
+            4. methods中的方法可以在视图中通过事件触发方法
+            5. methods中的方法可以在视图中{{fn()}}
+            6. methods中的方法在事件调用里面如果没有参数
+                可以直接写函数名 v-on:click="fn"
+            */
+            methods: {
+                fn: function () {
+                    console.log('被调用了')
+                },
+                fn1: function () {
+                    // 修改data中count->访问data的数据->js中访问data数据
+                    vm.count++
+                },
+                fn2: function () {
+                    // this->当前vm
+                    this.count++
+                }
+            }
+        })
+        vm.fn()
+    </script>
+</body>
+
+</html>

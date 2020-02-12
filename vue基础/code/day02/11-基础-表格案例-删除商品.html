@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        #app {
+            width: 600px;
+            margin: 10px auto;
+        }
+
+        .tb {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .tb th {
+            background-color: #0094ff;
+            color: white;
+        }
+
+        .tb td,
+        .tb th {
+            padding: 5px;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        .add {
+            padding: 5px;
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="add">
+            品牌名称:
+            <input type="text" v-model="name">
+            <input type="button" value="添加" @click="add">
+        </div>
+
+        <div class="add">
+            品牌名称:
+            <input type="text" placeholder="请输入搜索条件">
+        </div>
+
+        <div>
+            <table class="tb">
+                <tr>
+                    <th>编号</th>
+                    <th>品牌名称</th>
+                    <th>创立时间</th>
+                    <th>操作</th>
+                </tr>
+                <tr v-for="(v,i) in list" :key="i">
+                    <td>{{i}}</td>
+                    <td>{{v.name}}</td>
+                    <td>{{v.date}}</td>
+                    <td>
+                        <a href="#" @click="dele(i)">删除</a>
+                    </td>
+                </tr>
+                <tr v-if="list.length===0">
+                    <td colspan="4">没有品牌数据</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        /* 
+        1. 静态页面 准备
+        2. 实例化一个Vue
+        3. 定义表格数据
+        4. 采用v-for 循环将静态内容切换为动态内容
+        5. 采用v-if控制提示消息
+        */
+        // 准备数据
+        let list = [{
+            name: "zhangsan",
+            date: new Date()
+        }, {
+            name: "zhangsan1",
+            date: new Date()
+        }]
+        // 开始写
+        new Vue({
+            el: '#app',
+            data: {
+                list,
+                name: ''
+            },
+            methods: {
+                add() {
+                    this.list.unshift({
+                        name: this.name,
+                        date: new Date()
+                    })
+                },
+                dele(index) {
+                    // 提示框
+                    if (confirm('是否删除')) {
+                        this.list.splice(index, 1)
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

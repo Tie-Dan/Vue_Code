@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <span>{{ count1 }}</span><button @click="fn1">+</button> <br />
+    <span>{{ count2 }}</span><button @click="fn2">+</button> <br />
+
+    <span>{{ count3 }}</span><button @click="fn3">+</button> <br />
+    <span>{{ count4 }}</span><button @click="fn4">+</button> <br />
+
+    <span>{{ count5 }}</span><button @click="fn5">+</button> <br />
+    <span>{{ count6 }}</span><button @click="fn6">+</button> <br />
+    <!-- <span-count></span-count>
+    <span-count></span-count>
+    <span-count></span-count>
+    <span-count></span-count>
+    <span-count></span-count>
+    <span-count></span-count> -->
+  </div>
+  <script src="./vue.js"></script>
+  <script>
+    // Vue.component("span-count", {
+    //   template: `<div>
+    //    <span>
+    //    {{count}}
+    //   </span>
+    //   <button @click="add">+</button>
+    //   </div>`,
+    //   data() {
+    //     return { count: 0 };
+    //   },
+    //   methods: {
+    //     add() {
+    //       this.count++;
+    //     }
+    //   }
+    // });
+    var vm = new Vue({
+      el: "#app",
+      data: {
+        count1: 0,
+        count2: 0,
+        count3: 0,
+        count4: 0,
+        count5: 0,
+        count6: 0
+      },
+      methods: {
+        fn1() {
+          this.count1++;
+        },
+        fn2() {
+          this.count2++;
+        },
+        fn3() {
+          this.count3++;
+        },
+        fn4() {
+          this.count4++;
+        },
+        fn5() {
+          this.count5++;
+        },
+        fn6() {
+          this.count6++;
+        }
+      }
+    });
+  </script>
+  <!-- 
+        路径: 多个重复的页面结构如何实现
+        1 重复编码方式  定义多个重复类型的数据 多个重复类型的结构 多个重复的逻辑
+        2 组件模式 
+     -->
+</body>
+
+</html>

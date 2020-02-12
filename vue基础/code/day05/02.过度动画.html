@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #obox {
+            width: 200px;
+            height: 200px;
+            background: red;
+            position: absolute;
+        }
+
+        #obtn {
+            position: absolute;
+            top: 200px;
+        }
+
+        /* 6个类名 */
+
+        .my-enter-to,
+        .my-leave {
+            left: 0px;
+            opacity: 1
+        }
+
+        .my-leave-to,
+        .my-enter {
+            left: 200px;
+            opacity: 0;
+        }
+
+        .my-enter-active,
+        .my-leave-active {
+            transition: all 2s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <transition name="my">
+            <div id="obox" v-if="isShow"></div>
+        </transition>
+        <button id="obtn" @click="changShow()">按钮</button>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                isShow: true
+            },
+            methods: {
+                changShow() {
+                    this.isShow = !this.isShow
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

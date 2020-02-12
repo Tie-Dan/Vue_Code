@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 遍历list -->
+        <!-- 
+            使用v-for时 建议给每个元素设置一个key属性
+            key属性的值 要求是每个元素的唯一值
+            好处:vue渲染页面标签 速度快
+         -->
+        <!-- 
+            <li v-for="(v,i) in list" :key="i">{{v}}</li>
+            // key用时候前面加:如果不加虽然效果会出来但是控制台会报错
+         -->
+
+        <ul>
+            <li v-for="(v,i) in list" :key="i">{{v}}</li>
+            <!-- <li v-for="(v,k,i) in json" :key="i">{{v}}---{{k}}</li> -->
+        </ul>
+        <!-- 嵌套写法 -->
+
+        <ul>
+            <li v-for="(v,i) in list">
+                <span>{{v}}</span>
+                <span>{{i}}</span>
+            </li>
+        </ul>
+
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                list: ['a', 'b', 'c'],
+                json: {
+                    name: '张三',
+                    age: 15
+                }
+            },
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>

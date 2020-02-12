@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <h-p></h-p>
+        <h-p></h-p>
+        <h-p></h-p>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        /* 
+            全局组件
+            1.定义(组件名,组件选项所在对象)
+            注意:组件命名 abc abC ab-c
+            2.写选项
+            注意:template 一个根元素 data的值必须return 元素
+            3.使用
+        */
+        Vue.component('h-p', {
+            template: `<div>
+                <h3>{{msg}}</h3>
+                <p>nerong</p>
+                </div>`,
+            data() {
+                return {
+                    msg: 'abc'
+                }
+            }
+        })
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '123'
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            1. v-for="v in data中的对象" v是键值对中的值的value
+            2. v-for= "(v,k) in data中的对象" v是对象的value k是对象的key  
+            3. v-for= "(v,k,i) in data中的对象" v是对象的value k是对象的key  i代表索引
+        -->
+        <!-- 数组 -->
+        <li v-for="v in json">{{v}}</li>
+        <li v-for="(v,k) in json">{{v}}-----{{k}}</li>
+        <li v-for="(v,k,i) in json">{{v}}-----{{k}}-----{{i}}</li>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                json: {
+                    name: "张三",
+                    age: 18
+                }
+            },
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>

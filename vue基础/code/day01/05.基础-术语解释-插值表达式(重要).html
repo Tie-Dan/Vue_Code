@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            {{}}
+            代码位置:标签的内容区域
+            作用:将数据动态渲染到页面上
+            不能写的代码
+            {{var a=20 }}
+            {{ if(){} }}
+            {{ for(){} }}
+         -->
+        <p>{{ 1 + 2 + 3 }}</p>
+        <p>{{ 1 > 2 }}</p>
+        <!-- name为data中的数据 -->
+        <p>{{ name + ':消息' }}</p>
+        <!-- count 为data中的数据 -->
+        <p>{{ count === 1 }}</p>
+        <!-- count 为data中的数据 -->
+        <p>{{ count === 1 ? "成立" : "不成立" }}</p>
+
+        <!-- list为data中的数据 数组类型 -->
+        <p>{{ fn()}}</p>
+        <p>{{list}}</p>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                name: 'abc',
+                count: 1,
+                list: [1, 2, 3].reverse()
+            },
+            methods: {
+                fn() {
+                    console.log(123)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

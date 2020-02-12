@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            class对象
+            :class="{希望渲染的类名:值data中的bool类型数据}"
+         -->
+        <p class="left right" :class="{left:a,right:b}"></p>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                a: true,
+                b: false
+            },
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>

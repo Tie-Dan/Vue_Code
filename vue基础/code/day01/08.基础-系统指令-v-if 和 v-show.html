@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 条件渲染:根据其值bool 如果是true 渲染该标签 反之 不渲染 -->
+        <!-- 
+            v-if 值是布尔值
+            如果是true 插入元素
+            如果是false 移出元素
+            <p v-if="isShow">内容</p>
+            <p v-show="isShow">内容</p>
+         -->
+        <!-- 
+           v-if和v-show的区别
+           v-if true是插入元素 false移除元素
+           v-show true display:不为none false display:为none
+         -->
+        <!-- 
+            如果元素的显示和隐藏频繁切换 v-show
+            如果元素的显示和隐藏切换不频繁 v-if
+         -->
+        <p v-if="isShow">内容</p>
+        <p v-show="isShow">内容</p>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                isShow: false
+            },
+            methods: {
+
+            }
+        });
+    </script>
+</body>
+
+</html>

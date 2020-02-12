@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+  <style>
+    .btn {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 30px;
+      cursor: pointer;
+    }
+
+    .text {
+      padding: 0 20px;
+      font-size: 30px;
+    }
+
+    .step {
+      margin: 40px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <step-counter></step-counter>
+    <step-counter></step-counter>
+    <step-counter></step-counter>
+  </div>
+  <script src="./vue.js"></script>
+  <script>
+    Vue.component("step-counter", {
+      template: `
+        <div class='step'>
+         <span class='btn' @click="cut">-</span>
+         <span class='text'>{{count}}</span>
+         <span class='btn' @click="add">+</span>
+        </div>
+        `,
+      data() {
+        return {
+          count: 0
+        };
+      },
+      methods: {
+        add() {
+          this.count++;
+        },
+        cut() {
+          // if (this.count > 0) this.count--;
+          this.count > 0 && this.count--;
+        }
+      }
+    });
+    var vm = new Vue({
+      el: "#app",
+      data: {},
+      methods: {}
+    });
+  </script>
+  <!-- 注册全局组件 -->
+</body>
+
+</html>

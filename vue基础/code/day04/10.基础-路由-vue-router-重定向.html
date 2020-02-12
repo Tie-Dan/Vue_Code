@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- to属性值的用法 -->
+        <!-- to值字符串 -->
+        <router-link to="/home">主页</router-link>
+        <!-- to值表达式 -->
+        <router-link :to="top">热点</router-link>
+        <!-- to值 可以是{path等} -->
+        <router-link :to="{path:'/aboutus'}">关于我们</router-link>
+        <!-- to值 可以是{name等} -->
+        <router-link :to="{name:'aaa'}">AAA</router-link>
+        <!-- to值 可以是{params:{参数名:值}} -->
+        <router-link :to="{name:'bbb',params:{id:300}}">BBB</router-link>
+        <!-- 提供容器 -->
+        <router-view></router-view>
+    </div>
+    <script src="./vue.js"></script>
+    <script src="./vue-router.js"></script>
+    <script>
+        // 模板内容
+        const homea = {
+            template: `<div>
+                    <span>主页</span>
+                </div>`
+        }
+        const topa = {
+            template: `<div>
+                    <span>热点</span>
+                </div>`
+        }
+        const aboutusa = {
+            template: `<div>
+                    <span>关于我们</span>
+                </div>`
+        }
+        const AAA = {
+            template: `<div>
+                    <span>AAA</span>
+                </div>`
+        }
+        const BBB = {
+            template: `<div>
+                    <span>BBB组件 参数:{{$route.params.id}}</span>
+                </div>`
+        }
+        const router = new VueRouter({
+            // 路由的匹配
+            routes: [{
+                path: '/home',
+                component: homea
+            }, {
+                path: '/top',
+                component: topa,
+                redirect: '/home'
+            }, {
+                path: '/aboutus',
+                component: aboutusa
+            }, {
+                name: 'aaa',
+                path: '/aaa',
+                component: AAA
+            }, {
+                name: 'bbb',
+                path: '/bbb/:id',
+                component: BBB
+            }]
+        })
+        var app = new Vue({
+            el: '#app',
+            router,
+            data: {
+                top: '/top'
+            },
+            methods: {
+
+            }
+        });
+    </script>
+</body>
+
+</html>

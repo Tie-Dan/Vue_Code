@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+
+    <style type="text/css">
+        .router-link-active {
+            color: green;
+            font-size: 30px;
+        }
+        
+        .box {
+            border: 1px solid black;
+        }
+        
+        nav {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!--router-link运行后会自动变成a标签-->
+        <nav>
+            <router-link to="/top">热点</router-link>
+            <router-link to="/tech">教育</router-link>
+            <router-link to="/soc">社会</router-link>
+            <router-link to="/mus">音乐</router-link>
+            <router-link to="/te">体育</router-link>
+        </nav>
+
+
+        <!--容器-->
+        <router-view class="box">
+
+        </router-view>
+
+    </div>
+
+    <script src="./vue.js"></script>
+    <script src="./vue-router.js"></script>
+    <script>
+        // 组件:
+
+        // 热点
+        var Top = {
+            template: '<h1>Top</h1>'
+        };
+
+        // 体育:带参数的二级路由
+        var Te = {
+            template: `
+                    <div>
+                        <ul>
+                            <li><router-link to='/te/basb/10'>篮球</router-link></li>
+                            <li><router-link to='/te/fotb/10'>足球</router-link></li>
+                            <li><router-link to='/te/mbal/10'>好多球</router-link></li>
+                        </ul>
+                        <router-view class="box"></router-view>
+                    </div>
+                    `
+        };
+
+        // 教育:使用了data
+        var Tech = {
+            data: function() {
+                return {
+                    name: "luck",
+                    age: 10,
+                    fn: function() {
+                        alert(1);
+                    }
+                }
+            },
+            template: `
+                            <div>
+                                <p @click="fn">{{name}}</p>
+                                <p>{{age}}</p>
+                            </div>
+                        `
+        }
+
+        // 社会
+        var Soc = {
+            template: '<h1>soc</h1>'
+        };
+
+
+        // 音乐:不带参数的二级路由
+        var Mus = {
+            // template: '<h1>mus</h1>'
+            template: `
+                    <div>
+                        <ul>
+                            <li><router-link to='/mus/pop'>流行</router-link></li>
+                            <li><router-link to='/mus/tra'>古典</router-link></li>
+                            <li><router-link to='/mus/roc'>摇滚</router-link></li>
+                        </ul>
+                        <router-view class="box"></router-view>
+                    </div>
+                    `
+        };
+
+        // 音乐二级路由的视图模块
+        var Pop = {
+            template: '<h3>mus下的pop模块</h3>'
+        };
+
+        // 体育二级路由的视图模块
+        var Ball = {
+            //路由参数 $route.params
+            template: "<h3>{{$route.params}}</h3>"
+        };
+
+        // 配置路由
+        var routes = [
+            // 热点
+            {
+                path: '/top',
+                component: Top
+            },
+            // 教育
+            {
+                path: '/tech',
+                component: Tech
+            },
+            // 社会
+            {
+                path: '/soc',
+                component: Soc
+            }, {
+                path: '/mus',
+                component: Mus,
+                //子路由配置
+                children: [{
+                    path: 'pop',
+                    component: Pop,
+                }]
+            },
+            // 体育
+            {
+                path: '/te',
+                component: Te,
+                children: [{ // /te/形参/10
+                    path: ':cate/10',
+                    component: Ball
+                }]
+            },
+
+            //重定向:默认或者404界面 
+            {
+                path: '*',
+                redirect: '/top'
+            }
+        ];
+
+        // 实例化路由
+        var router = new VueRouter({
+            // routes : routes
+            routes
+        });
+
+
+        // 实例化vue
+        var vue = new Vue({
+            el: '#app',
+            // router : router
+            router
+        });
+    </script>
+</body>
+
+
+</html>

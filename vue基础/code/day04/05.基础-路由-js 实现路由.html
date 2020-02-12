@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <ul>
+        <li><a href="#/aaa">aaa</a></li>
+        <li><a href="#/bbb">bbb</a></li>
+        <li><a href="#/ccc">ccc</a></li>
+        <li><a href="#/ddd">ddd</a></li>
+    </ul>
+    <!-- 容器 -->
+    <div id="main"></div>
+    <script>
+        // 目的:根据不同的标识 渲染不同内容
+        // 获取当前的标识=>判断=>渲染内容
+        let oBox = document.getElementById('main')
+        window.onhashchange = function () {
+            let hash = location.hash
+            console.log(hash)
+            hash = hash.replace("#/", "")
+            console.log(hash)
+            switch (hash) {
+                case 'aaa':
+                    oBox.innerText = "AAA"
+                    break;
+                case 'bbb':
+                    oBox.innerText = "BBB"
+                    break;
+                case 'ccc':
+                    oBox.innerText = "CCC"
+                    break;
+                case 'ddd':
+                    oBox.innerText = "DDD"
+                    break;
+                default:
+                    break;
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <child-a></child-a>
+        <child-b></child-b>
+        <parent-a></parent-a>
+        <com-a></com-a>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        Vue.component('child-a', {
+            template: "<div>我是child-a组件</div>"
+        })
+        Vue.component('child-b', {
+            template: "<div>我是child-b组件</div>"
+        })
+        // 全局组件的使用位置:可以在后面的任意视图模板中使用
+        // 此时 child-a和child-b 是parent-a的子组件
+        Vue.component('parent-a', {
+            template: `<div>我是parent-a组件
+                    <child-a></child-a>
+                    <child-b></child-b>
+                </div>`
+        })
+        var app = new Vue({
+            el: '#app',
+            data: {},
+            components: {
+                // 全局组件 child-b是com-a的子组件
+                // 问题:
+                // 一个组件是子还是父跟全局还是局部没关系
+                // 更实用的位置有关系
+                "com-a": {
+                    template: `
+                        <div>
+                            <child-b><child-b>
+                        </div>
+                    `
+                }
+            },
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- :style="{对象}" -->
+        <!-- 
+            {}中的key是style的css属性名  font-size的js写法
+            {}中的value 
+         -->
+        <p :style="{color:a,fontSize:b}">
+            内容
+        </p>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                a: 'red',
+                b: '30px'
+            },
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>

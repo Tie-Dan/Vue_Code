@@ -1,0 +1,4 @@
+li{color:red;}
+/*给两个div设置样式*/
+#one{width:150px; height:100px; background-image: url('../img/bigger.jpg')}
+#two{width:150px; height:100px; background-image: url('../img/small.jpg')}

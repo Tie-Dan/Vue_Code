@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        #app {
+            width: 600px;
+            margin: 10px auto;
+        }
+        
+        .tb {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        .tb th {
+            background-color: #0094ff;
+            color: white;
+        }
+        
+        .tb td,
+        .tb th {
+            padding: 5px;
+            border: 1px solid black;
+            text-align: center;
+        }
+        
+        .add {
+            padding: 5px;
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="add">
+            品牌名称:
+            <input type="text" v-model="name">
+            <input :disabled="name.length===0" type="button" value="添加" @click="addItem">
+        </div>
+
+        <div class="add">
+            品牌名称:
+            <input type="text" placeholder="请输入搜索条件">
+        </div>
+
+        <div>
+            <table class="tb">
+                <tr>
+                    <th>编号</th>
+                    <th>品牌名称</th>
+                    <th>创立时间</th>
+                    <th>操作</th>
+                </tr>
+                <tr v-for="(item,index) in list" :key="index">
+                    <td>{{index+1}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.date}}</td>
+                    <td>
+                        <a href="#" @click.prevent="deleItem(index)">删除</a>
+                    </td>
+                </tr>
+                <!-- 
+                    如果list中没数据, 就显示下面的tr
+                    如果list中有数据,就不显示下面的tr
+                    -->
+                <tr v-if="list.length===0">
+                    <td colspan="4">没有品牌数据</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                // 模拟ajax请求返回的数据
+                list: [{
+                    name: 'TCL',
+                    date: new Date()
+                }, {
+                    name: '小米',
+                    date: new Date()
+                }, {
+                    name: '苹果',
+                    date: new Date()
+                }],
+                // 要添加的商品名称
+                name: ''
+            },
+            methods: {
+                // 删除商品
+                deleItem: function(index) {
+                    // console.log(index);
+                    // console.log('deleItem被触发了');
+                    // 要从list数组中删除当前的tr标签对应的数据
+                    // 提示框
+                    if (confirm('是否删除?')) {
+                        this.list.splice(index, 1);
+                    }
+                },
+                // 添加商品
+                addItem: function() {
+                    // 向list数组中添加商品 
+                    this.list.unshift({
+                        name: this.name,
+                        date: new Date()
+                    });
+                    // 清空商品名称的输入框
+                    this.name = '';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
+<!-- 
+    1 渲染表格
+        把假数据渲染到页面的相应位置
+        v-for指令遍历data中的某个数组
+    2 处理无数据时的渲染
+        v-if 如果有数据 就显示
+            如果没数据 就不显示
+    3 删除商品
+       点击删除按钮 删除当前按钮所在的tr标签
+       数据发生变化 -> 使用数据的视图自动发生变化
+       3.1 找到删除按钮 绑定click事件 触发方法
+       3.2 实现删除的方法
+       3.3 从list数组中删除当前这条数据
+    4 添加商品
+        在输入框中输入商品名称 点击添加按钮
+        在商品列表中的顶部渲染添加的商品
+        4.1 给商品名称的输入框绑定data中的name
+        4.2 找到添加商品的按钮,绑定click事件 调用方法
+        4.3 在方法中向list数组里添加商品信息
+    5 细节处理
+        5.1 添加按钮默认不能点击
+            v-bind绑定disabled属性
+        5.2 添加成功后, 清空商品名称的输入框
+        5.3 删除提示框
+-->

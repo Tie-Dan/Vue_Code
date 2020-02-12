@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <router-link to="/AAA">AAA</router-link>
+        <router-link to="/BBB">BBB</router-link>
+        <router-link to="/CCC">CCC</router-link>
+        <router-link to="/DDD">DDD</router-link>
+        <!-- 容器 -->
+        <router-view></router-view>
+    </div>
+    <script src="./vue.js"></script>
+    <script src="./vue-router.js"></script>
+    <script>
+        // 模板需要的内容
+        const comA = {
+            template: `<div>我是A组件</div>`
+        }
+        const comB = {
+            template: `<div>我是B组件</div>`
+        }
+        const comC = {
+            template: `<div>我是C组件</div>`
+        }
+        const comD = {
+            template: `<div>我是D组件</div>`
+        }
+        // 实例化路由对象
+        const router = new VueRouter({
+            // 路由选项
+            routes: [{
+                path: "/AAA",
+                component: comA
+            }, {
+                path: "/BBB",
+                component: comB
+            }, {
+                path: "/CCC",
+                component: comC
+            }, {
+                path: "/DDD",
+                component: comD
+            }]
+        })
+
+        var app = new Vue({
+            el: '#app',
+            router,
+            data: {},
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>

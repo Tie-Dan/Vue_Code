@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="obox">{{msg}}</div>
+    <script src="./vue.js"></script>
+    <script>
+        let vm = new Vue({
+            /* 
+            el作用:设置/指定 vue所管理的视图区域
+            1. el的值通常是id选择器
+            2. el的值可以是其他选择器
+            3. el的值可以是页面中已经存在的dom元素
+            注意:el不能直接管理html或者body
+            el:document.getElementById("app")
+            el:"#app"
+            el:".container"
+            */
+            el: "#obox",
+            data: {
+                msg: 'abc'
+            }
+        })
+    </script>
+</body>
+
+</html>

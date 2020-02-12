@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <child-a :msg="msgP"></child-a>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        // 需求:把根(父)组件的数据data中的某个数据msg 传递给子组件child-a去使用{{msg}}
+        Vue.component("child-a", {
+            template: ` <div>
+                        我是子组件
+                          {{count}}是自己的data中的数据count
+                          {{msg}}是来源于外部组件的数据</div>
+                        </div>`,
+            data() {
+                return {
+                    count: 100
+                }
+            },
+            props: ["msg"]
+
+        })
+        var app = new Vue({
+            el: '#app',
+            data: {
+                msgP: "我是父组件"
+            },
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>

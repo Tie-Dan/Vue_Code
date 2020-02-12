@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <input type="text" @input="changeInput" />
+    <button @click="btn">按钮</button>
+  </div>
+  <script src="./vue.js"></script>
+  <script>
+    var vm = new Vue({
+      el: "#app",
+      data: {
+        name: "hello world"
+      },
+      methods: {
+        changeInput(event) {
+          //   event中target值得是触发该事件的元素 dom对象
+          console.log(event.target.value);
+        },
+        btn() {
+          console.log(this.name);
+        }
+      }
+    });
+  </script>
+  <!-- 
+        1. 初始化一个Vue实例, 定义data中name  为hello world
+        2. 添加一个 input  button , 
+        3. 注册input值改变事件 值改变时获取 文本框内容
+        4. 注册botton点击事件 值改变时 获取当前data对象中的name值 输出 
+     -->
+</body>
+
+</html>

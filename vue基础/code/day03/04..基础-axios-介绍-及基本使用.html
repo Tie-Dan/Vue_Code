@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="./axios.min.js"></script>
+    <script>
+        /*
+            axios用法
+        axios.get(url).then((res) => {
+            // 请求成功 
+        }).catch((err) => {
+            // 请求失败
+        })
+        */
+        // get 请求
+        // http://localhost:3000/brands
+        // axios.get("http://localhost:3000/brands")
+        //     .then((res) => {
+        //         console.log(res)
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
+        // post 添加数据
+        // http://localhost:3000/brands
+        // axios.post("http://localhost:3000/brands", {
+        //         name: "tiedan",
+        //         date: new Date()
+        //     })
+        //     .then((res) => {
+        //         console.log(res)
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
+        // delete 删除数据
+        // http://localhost:3000/brands/id
+        // axios.delete("http://localhost:3000/brands/7")
+        //     .then((res) => {
+        //         console.log(res)
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
+        // get 模糊搜索
+        // http://localhost:3000/brands/id
+        axios.get("http://localhost:3000/brands?name_like=" + "aaa")
+            .then((res) => {
+                console.log(res)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        // put修改数据和post用法一样
+    </script>
+</body>
+
+</html>

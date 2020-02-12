@@ -1,0 +1,31 @@
+***	非常感谢老师的耐心讲解，希望可以多多分享一下经验和思路以及一些优秀习惯的养成。
+***	非常喜欢孙老师的课堂，内容丰富，讲解细致，后面希望老师多多讲解方法和思路
+***	感觉老师的讲课风格非常有意思。赞 赞 赞
+***	孙老师最最棒！！！！
+***	麻烦老师重新讲一下Vuex的实现方法吧
+var store = new Vuex.Store({
+    // 供获取使用
+    state:{
+        name:123,
+        photo:456
+    },
+    // 供修改使用，给每个共享数据都设置一个修改方法
+    mutations:{
+        upName(stt,arg){
+            stt.name = arg
+        },
+        upPhoto(stt,arg){
+            stt.photo = arg
+        },
+    }
+})
+// A组件中 获取到共享的数据
+this.$store.state.name  //123--->abc
+this.$store.state.photo //456--->def
+
+// B组件，对name数据进行修改(调用mutations成员)
+this.$store.commit('upName','abc')
+this.$store.commit('upPhoto','def')
+
+***	老师讲的好 100万分
+***	孙老师最棒！！！！！

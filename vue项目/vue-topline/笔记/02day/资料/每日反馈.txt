@@ -1,0 +1,5 @@
+***	老师好，app.vue文件中的 export default { name: "app", }; 这个name是做什么的，有什么用
+    在chrome浏览器中安装vue-devtools插件工具
+    name属性可以使得在devtools中方便查找到这个组件
+***	在说下vue-cli生成的项目结构的过程的思路
+    

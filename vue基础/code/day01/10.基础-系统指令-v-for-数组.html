@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            1. v-for="v in data中的数据" v指的数组中每个元素的值
+            2. v-for= "(v,i) in data中的容器名" v指的数组中每个元素的值  i指的索引
+        -->
+        <!-- 数组 -->
+        <p v-for="item in list">{{item}}</p>
+        <p v-for="(v,i) in list">{{v}}----{{i}}</p>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                list: ['a', 'b', 'c'],
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

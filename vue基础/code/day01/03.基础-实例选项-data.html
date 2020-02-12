@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <p>{{msg}}</p>
+        <p>{{count}}</p>
+        <p>{{list}}</p>
+    </div>
+
+    <script src="./vue.js"></script>
+    <script>
+        let vm = new Vue({
+            el: "#app",
+            data: {
+                msg: 'abc',
+                count: 100,
+                list: [1, 2, 3]
+            }
+        })
+        vm.msg = 200
+        vm.list.push(4)
+        console.log(vm)
+        console.log(vm.msg)
+        console.log(vm.list)
+        console.log(vm.$data.msg)
+    </script>
+</body>
+
+</html>

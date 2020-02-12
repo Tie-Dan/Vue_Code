@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            ref 操作dom
+            1.给要操作的元素设置ref属性 值随便写
+            2.在js中选mounted
+         -->
+        <input type="text" ref="txt">
+        <button @click="getVal">按钮</button>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+
+            },
+            methods: {
+                getVal() {
+                    console.log(this.$refs.txt.value)
+                }
+            },
+            // window.onload页面加载完毕 操作dom元素
+            mounted() {
+
+                //console.log("mounted被触发")
+                //console.log(this.$refs) / /{suibianxie: input}
+                this.$refs.txt.focus();
+            }
+        });
+    </script>
+</body>
+
+</html>

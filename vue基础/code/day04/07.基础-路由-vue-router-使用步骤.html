@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <router-link to="/home">主页</router-link>
+        <router-link to="/top">热点</router-link>
+        <router-link to="/aboutus">关于我们</router-link>
+        <!-- 提供容器 -->
+        <router-view></router-view>
+    </div>
+    <script src="./vue.js"></script>
+    <script src="./vue-router.js"></script>
+    <script>
+        // 模板内容
+        const homea = {
+            template: `<div>
+                    <span>主页</span>
+                <div>`
+        }
+        const topa = {
+            template: `<div>
+                    <span>热点</span>
+                <div>`
+        }
+        const aboutusa = {
+            template: `<div>
+                    <span>关于我们</span>
+                <div>`
+        }
+        const router = new VueRouter({
+            // 路由的匹配
+            routes: [{
+                path: '/home',
+                component: homea
+            }, {
+                path: '/top',
+                component: topa
+            }, {
+                path: '/aboutus',
+                component: aboutusa
+            }]
+        })
+        var app = new Vue({
+            el: '#app',
+            router,
+            data: {},
+            methods: {}
+        });
+    </script>
+</body>
+
+</html>

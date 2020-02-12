@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- v-text指令的值会替换标签内容 -->
+        <p>{{str}}</p>
+        <p v-text="str"></p>
+        <p v-text="str">我是p标签中的内容</p>
+        <p v-text="strhtml">我是p标签中的内容</p>
+        <p v-html="str"></p>
+        <!-- v-html指令的值(包括标签字符串)会替换掉标签的内容 -->
+        <p v-html="strhtml">我是p标签中的内容</p>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                str: 'abc',
+                strhtml: '<span style="color:red">content</span>'
+            }
+        });
+    </script>
+</body>
+
+</html>
