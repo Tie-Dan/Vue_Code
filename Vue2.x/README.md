@@ -28,7 +28,7 @@
           filename:'bundle.js',
           path:path.resolve(__dirname,'dist')
       },
-      devtool:'source-map', // 调试的时候可以快速找到源码
+      devtool:'source-map', // 调试的时候可以快速找到错误代码
       resolve:{
           // 更改模块查找方方式（默认的是去node_modules里去找）去source文件里去找
           modules:[path.resolve(__dirname,'source'),path.resolve('node_modules')]
@@ -50,7 +50,11 @@
    }
   ```
 
-1. 实现数据劫持
+1. 目录结构:
+
+   ![image-20200221093133872](../../../Library/Application Support/typora-user-images/image-20200221093133872.png)
+
+2. 实现数据劫持
 
    1. 初始化数据
 
@@ -83,10 +87,10 @@
           if (opts.data) {
               initData()
           }
-          if (vm.computed) {
+          if (opts.computed) {
               initComputed()
           }
-          if (vm.wactch) {
+          if (opts.wactch) {
               initWatch()
           }
       }
@@ -259,7 +263,7 @@
       ```
 
       ```js
-      // observe.js 监听数组中的没一项
+      // observe.js 监听数组中的每一项
       import { arrayMethods,observerArray} from './array';
       if (Array.isArray(data)) {
         data.__proto__ = arrayMethods
@@ -268,11 +272,18 @@
       } else {
         this.walk(data)
       }
+      
+   注意: 什么样的数组不会被观察
+      1.直接改数组的索引值 不能被检测到
+      2.直接改length也不行
+      因为数组长度变化 没有被监控
+      [{a:1}] 内部会对数组里的对象进行监控
+      [].push/shift/unshift 这些方法可以被监控 vm.$set内部调用就是数组的splice方法
       ```
-
+      
       
 
-2. 初始化渲染页面
+3. 初始化渲染页面
 
    1. 初始化获取挂载节点
 
@@ -359,7 +370,7 @@
           // 渲染所有元素 把内容替换成数据 
           let node = document.createDocumentFragment()
           let firstChild
-          while (firstChild = el.firstChild) {
+          while (firstChild = el.firstChild) { // 每次拿到第一个元素放到文档碎片当中
               node.appendChild(firstChild)
           }
           // 对文本进行替换
@@ -376,7 +387,7 @@
       // 2.
       export const util = {
          // 4.
-          getValue(vm, expr) {
+          getValue(vm, expr) { // {{scholl.name}}
               let keys = expr.split('.')
               return keys.reduce((memo, current) => {
                   memo = memo[current];
@@ -408,7 +419,7 @@
       };
       ```
 
-3. 数据改变依赖收集（发布订阅模式）
+4. 数据改变依赖收集（发布订阅模式）
 
    1. 创建Dep收集依赖
 
@@ -438,9 +449,9 @@
       // 取
       export function popTarget() {
           stack.pop();
-          Dep.target = stack[stack.length - 1]
+          Dep.target = stack[stack.length - 1] 
       }
-      export default Dep // 用来收集依赖
+      export default Dep // 目的用来收集依赖
       ```
 
    2. 调用Watcher的时候存取
@@ -452,6 +463,16 @@
       	this.getter(); // 默认创建的watcher会调用自身的get方法 渲染更新
       	popTarget() // 取
       }
+      /*
+           属性有多个watcher 每次调用就有一个
+           1.默认创建一个watcher执行
+           2. pushTarget(this)   就是 Dep.target = watcher
+      		 3.this.getter() 会调用_update方法获取data属性渲染数据 获取data属性就触发了	     defineProerty的get方法 在get方法中给当前属性加一个dep dep.addSub(watcher) // 订阅
+      		 4.当用户修改属性变化后 会调用触发defineProerty的set方法 然后调用dep.notify()方法
+      		  dep.subs.forEach(watcher => watcher.update()) // 发布 更新
+      		 5. 每个属性创建一个dep
+      		 6. 每次取值都会把watcher存到dep
+      */
       ```
 
    3. 给每个data属性创建dep
@@ -606,6 +627,7 @@
    8. 数组方法的重新 只能实现了新增和修改属性的监听  没有实现每个属性的依赖收集
 
       ```js
+      //  现在只实现了对象的监听  还没有实现数组的监听
       //  observe.js 
       // 1. 给数组创建dep并且每个对象添加__ob__属性(Observer)   
       this.dep = new Dep() // 此dep 专门为数组而设定的
@@ -613,30 +635,31 @@
       Object.defineProperty(data, '__ob__', {
         get: () => this
       })
-      // 2. 拿到数组的dep
+      
+      
+      // 2. 通知视图更新  array.js
+      this.__ob__.dep.notify()
+      
+      
+      // 3. 拿到数组的dep   observe.js
        // childOb 是返回数组的dep
-      let childOb = observe(value)
-       // 如果有数组的dep收集依赖
+   let childOb = observe(value)
+       // get方法中判断 如果有数组的dep收集依赖
       if (childOb) {
         childOb.dep.depend(); // 数组也收集了当前渲染watcher
-        dependArray(value); // 收集儿子的依赖
-      }
+         dependArray(value); // 收集儿子的依赖
+   }
       ```
-
+      
       ```js
-      // 通知视图更新  array.js
-      this.__ob__.dep.notify()
-      ```
-
-      ```js
-      // observe.js
+      // observe函数中判断有了直接返回
       if (data.__ob__) { // 已经被监控过了
         return data.__ob__
-      }
+   }
       ```
-
+      
       ```js
-      // observe.js 多维数组的收集
+      // array.js 多维数组的收集
       // 递归多维数组 收集依赖
       export function dependArray(value) {
           for (let i = 0; i < value.length; i++) {
@@ -649,7 +672,7 @@
       }
       ```
 
-4. watch方法的实现
+5. watch方法的实现
 
    ```js
    // 1.初始化
@@ -662,9 +685,9 @@
        return vm.$watch(key, handler);
    }
    // 2.
-   function initWatch(vm) {
+   function initWatch(vm) 
        let watch = vm.$options.watch; // 获取用户传入的watch属性
-       for (let key in watch) { // msg(){} 有能是多个
+       for (let key in watch) { //	·[msg(){},....]  有能是多个
            let handler = watch[key]
            createWatcher(vm, key, handler)
        }
@@ -686,7 +709,7 @@
      this.getter = exprOrfn
    } else {
      // 1. 现在exprOrfn是我们调用watcher方法传进来的key 需要获取相对应的值
-     this.getter = function () {
+     this.getter = function () { 
        return util.getValue(vm, exprOrfn)
      }
    }
@@ -712,7 +735,7 @@
    }
    ```
 
-5. computed实现
+6. computed实现
 
    ```js
    if (opts.computed) {
@@ -722,37 +745,45 @@
 
    ```js
    function initComputed(vm, computed) {
-       // 将计算属性的配置放到vm上  创建存储计算属性的watcher的对象
+       // 1 .将计算属性的配置放到vm上  创建存储计算属性的watcher的对象
        let watchers = vm._watchersComputed = Object.create(null);
        for (let key in computed) {
            let userDef = computed[key];
-           watchers[key] = new Watcher(vm, userDef, () => {}, {
+          watchers[key] = new Watcher(vm, userDef, () => {}, {
                lazy: true // 计算属性watcher 默认刚开始这个方法不会执行
            })
-           // 将key定义到vm上
-           Object.defineProperty(vm, key, {
-               get: createComputedGetter(vm, key)
-           })
-       }
+         // 3.用户取值时调用此方法 将key定义到vm上
+         Object.defineProperty(vm, key, {
+           get: createComputedGetter(vm, key) // 返回函数
+         })
+         }
+           
    }
    ```
 
    ```js
-   // 用户取值时调用此方法
+   // 2. 如果当前我们是计算属性的话 不会默认调用get方法  watcher.js
+   this.lazy = opts.lazy
+   this.dirty = this.lazy
+   this.value = this.lazy ? undefined : this.get(); // 默认创建的watcher会调用自身的get方法 渲染更新
+   
+   // 4. 监听获取计算属性
    function createComputedGetter(vm, key) {
        // 这个watcher 就是我们定义的计算属性
        let watcher = vm._watchersComputed[key]
        return function () {
            if (watcher) {
-               // 如果dirty 是fasle的话 不需要重新执行计算属性中的方法
+              
                if (watcher.dirty) {
-                   // 如果页面取值 而且dirty是true 就会去调用watcher的get方法
+                //5. 如果页面取值 而且dirty是true 就会去调用watcher的get方法
+                   // 如果dirty 是fasle的话 不需要重新执行计算属性中的方法
                    watcher.evaluate()
                }
-               //  watcher中存着 td  msg 
-               if (Dep.target) { // watcher就是计算属性 watcher
+               //  9. watcher就是计算属性watcher 存用到用到属性dep相对应的watcher
+               if (Dep.target) {
                    watcher.depend()
                }
+             
                return watcher.value
            }
        }
@@ -760,11 +791,12 @@
    ```
 
    ```js
-   // 获取到计算属性刷新
+   // 6. 获取到计算属性刷新  wacher.js
    evaluate() {
      this.value = this.get()
      this.dirty = false;
    }
+   // 7. 获取返回值
    get() {
      pushTarget(this) 
      let value = this.getter.call(this.vm); // 让函数(updateComponent)执行
@@ -774,327 +806,27 @@
    ```
 
    ```js
-   // 如果当前我们是计算属性的话 不会默认调用get方法
-    this.value = this.lazy ? undefined : this.get(); // 默认创建的watcher会调用自身的get方法 渲染更新
-   ```
-
-   ```js
+   // 8. 
    update() {
      // this.get() // 重复设置属性 会多次get刷新 同一个属性所以要批量操作 防止重复创新
-     if (this.lazy) { // 如果是计算属性
+     if (this.lazy) { // 如果是计算属性是true  更新让this.dirty变成false
        this.dirty = true
      } else {
        queueWatcher(this)
      }
    }
-   ```
-
-## 2. DOM-diff
-
-1. js对象模拟DOM中的节点
-
-   ```js
-   // 1. 创建虚拟DOM
-   h('div', {
-       id: 'wrapper',
-       a: 1,
-       key: 'xxx'
-   }, h('sapn', {
-       style: {
-           color: 'red'
-       }
-   }, 'hello'), 'td')
-   ```
-
-   ```js
-   // 2. vdom/index.js
-   import h from './h'
-   export {
-       h
-   }
-   ```
-
-   ```js
-   // 3. h.js
-   /**
-    * @param {*} type  节点
-    * @param {*} props 节点属性
-    * @param  {...any} children  所有孩子
-    */
-   import {vnode} from './vnode'
-   export default function createElement(type, props = {}, ...children) {
-     // 4. 获取属性的key 然后删掉
-       let key;
-       if (props.key) {
-           key = props.key;
-           delete props.key
-       }
-       // 5. 将不是虚拟节点的子节点 变成虚拟节点
-       children = children.map(child => {
-           if (typeof child === 'string') {
-               return vnode(undefined, undefined, undefined, undefined, child)
-           } else {
-               return child
-           }
-       })
-       return vnode(type, props, key, children)
-   }
-   ```
-
-   ```js
-   // 6.vnode.js
-   export function vnode(type, props, key, children, Text) {
-       return {
-           type,
-           props,
-           key,
-           children,
-           Text
-       }
-   }
-   ```
-
-2. 渲染虚拟DOM
-
-   ```js
-   // 1. index.js
-   render(vnode, app)
-   ```
-
-   ```js
-   // 2. patch.sj
-   xport function render(vnode, container) {
-       // 通过这个方法可以将虚拟节点转化为真实节点
-       let ele = createDomElementFromVnode(vnode)
-       //  插入到容器
-       container.appendChild(ele)
-   }
-   // 通过虚拟节点创建一个真实的DOM节点
-   function createDomElementFromVnode(vnode) {
-       let {
-           type,
-           key,
-           props,
-           children,
-           text
-       } = vnode
-       // 传递了类型 说明是一个标签
-       if (type) {
-           // 建立虚拟节点和真实元素一个关系 后面可以用来更新真实DOM
-           vnode.domElement = document.createElement(type)
-       } else {
-           // 文本
-           vnode.domElement = document.createTextNode(text)
-       }
-       return vnode.domElement
-   }
-   ```
-
-   ```js
-   // 创建完真实DOM节点 根据当前的虚拟节点的属性 更新真实的dom元素
-   if (type) {
-     // 建立虚拟节点和真实元素一个关系 后面可以用来更新真实DOM
-     vnode.domElement = document.createElement(type)
-     updateProperties(vnode) // 1. 根据当前的虚拟节点的属性 去更新真实的DOM元素
-   } else {
-     vnode.domElement = document.createTextNode(text)
-   }
-   ```
-
-   ```js
-   // 2. 后续对象的时候 会根据老的属性和新的属性 重新更新节点
-   function updateProperties(newVnode, oldProps = {}) {
-       let domElement = newVnode.domElement // 真实的DOM元素
-       let newProps = newVnode.props // 当前虚拟节点中的属性
-       // 3. 老的里面有 新的里面没有 这个属性被移除了
-       for (let oldPropName in oldProps) {
-           if (!newProps[oldPropName]) {
-               delete domElement[oldPropName]
-           }
-       }
-       // 4. 如果老的里面没有 新的里面有
-       for (let newPropsName in newProps) {
-           domElement[newPropsName] = newProps[newPropsName]
-       }
-       // console.log(domElement.a)
-   }
-   ```
-
-   ```js
-   // 如果属性是style
-   for (let newPropsName in newProps) {
-     // 6. 如果当前是style属性 取出来赋值给真实的DOM元素
-     if (newPropsName == 'style') {
-       let styleObj = newProps.style;
-       for (let s in styleObj) {
-         domElement.style[s] = styleObj[s];
-       }
-     } else {
-       domElement[newPropsName] = newProps[newPropsName]
+   // 10. watcher中depend方法
+   depend(){
+   	let i = this.deps.length;
+     while(i--){
+       this.deps[i].depend()
      }
    }
    ```
 
-   ```js
-   // 如果新的里面有style 老的里面也有style style有可能还不一样 老的有background新的里面咩有
-   let newStyleObj = newProps.style || {}
-   let oldStyleObj = oldProps.style || {}
-   for (let propName in oldStyleObj) {
-     if (!newStyleObj[propName]) {
-       // 老dom元素上跟新之后 没有某个样式需要删除
-       document.style[propName] = ''
-     }
-   }
-   ```
+## 2. 面试题
 
-   ```js
-   // 递归调用render()渲染子节点
-   vnode.domElement = document.createElement(type)
-   updateProperties(vnode)
-   // children中放的也是一个个的虚拟节点 递归调用渲染
-   children.forEach(childVnode => render(childVnode, vnode.domElement))
-   ```
-
-3. 新老节点对比
-
-   ```js
-   let oldVnode = h('div', {
-       id: 'wrapper',
-       a: 1,
-       key: 'xxx',
-       style: {
-           color: 'red'
-       }
-   }, h('sapn', {
-       style: {
-           color: 'red'
-       }
-   }, 'hello'), 'td')
-   
-   render(oldVnode, app)
-   
-   let newVnode = h('a', {}, 'hello word')
-   
-   setTimeout(() => {
-       patch(oldVnode, newVnode)
-   }, 2000);
-   ```
-
-   ```js
-   export function patch(oldVnode, newVnode) {
-       // 1. 类型不同
-       if (oldVnode.type !== newVnode.type) {
-           return oldVnode.domElement.parentNode.replaceChild(
-               createDomElementFromVnode(newVnode), // 创建新的DOM
-               oldVnode.domElement // 老的DOM
-           )
-       }
-       // 2. 类型相同 换文本
-       if (oldVnode.text) {
-           if (oldVnode.text == newVnode.text) return
-           return oldVnode.domElement.textContent = newVnode.text
-       }
-   }
-   ```
-
-   ```js
-   // 类型一样 并且是标签 需要根据新节点的属性 更新老节点的属性
-   let domElement = newVnode.domElement = oldVnode.domElement;
-   // 根据最新的虚拟节点来更新属性
-   updateProperties(newVnode, oldVnode.props)
-   ```
-
-   ```js
-   // 三种情况
-   // 1.老的有儿子 新的有儿子
-   // 2.老的有儿子 新的没儿子
-   // 3.新增了儿子
-   let oldChildren = oldVnode.children;
-   let newChildren = newVnode.children;
-   // 1.老的有儿子 新的有儿子
-   // 2.老的有儿子 新的没儿子
-   // 3.新增了儿子
-   if (oldChildren.length > 0 && newChildren.length > 0) {
-     updateChildren(domElement, oldChildren, newChildren)
-   } else if (oldChildren.length > 0) {
-     domElement.innerHTML = ''
-   } else if (newChildren.length > 0) {
-     for (let i = 0; i < newChildren.length; i++) {
-       domElement.appendChild(createDomElementFromVnode(newChildren[i]))
-     }
-   }
-   ```
-
-   ```js
-   // 两个节点对比
-   function isSomeVnode(oldVnode, newVnode) {
-       return oldVnode.key === newVnode.key && oldVnode.type === newVnode.type
-   }
-   // diff 最复杂的列表
-   function updateChildren(parent, oldChildren, newChildren) {
-       let oldStartIndex = 0
-       let oldStartVnode = oldChildren[0]
-       let oldEndIndex = oldChildren.length - 1
-       let oldEndVnode = oldChildren[oldEndIndex]
-   
-       let newStartIndex = 0
-       let newStartVnode = newChildren[0]
-       let newEndIndex = newChildren.length - 1
-       let newEndVnode = newChildren[newEndIndex]
-   
-       // 判断老的孩子和新的孩子 循环的时候 谁先结束就停止循环
-       while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
-           if (isSomeVnode(oldStartVnode, newStartVnode)) {
-               // 如果标签相同 调用patch方法 让他们去对比属性
-               patch(oldStartVnode, newStartVnode)
-               // 如果他们俩相同 分别往后移一位
-               oldStartVnode = oldChildren[++oldStartIndex]
-               newStartVnode = newChildren[++newStartIndex]
-           }
-       }
-   }
-   ```
-
-   ```js
-   while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
-           // 头部一样 
-           if (isSomeVnode(oldStartVnode, newStartVnode)) {
-               // 如果标签相同 调用patch方法 让他们去对比属性
-               patch(oldStartVnode, newStartVnode)
-               // 如果他们俩相同 分别往后移一位
-               oldStartVnode = oldChildren[++oldStartIndex]
-               newStartVnode = newChildren[++newStartIndex]
-           } else if (isSomeVnode(oldEndVnode, newEndVnode)) { // 尾部一样
-               patch(oldEndVnode, newEndVnode)
-               oldEndVnode = oldChildren[--oldEndIndex]
-               newEndVnode = newChildren[--newEndIndex]
-           }
-       }
-       // 把多余节点放进去  只有小于或者等于 才说明有剩余
-       if (newStartIndex <= newEndIndex) {
-           for (let i = newStartIndex; i <= newEndIndex; i++) {
-               // parent.appendChild(createDomElementFromVnode(newChildren[i]))
-               let beforeElement = newChildren[newEndIndex + 1] == null ? null : newChildren[newEndIndex + 1].domElement;
-               parent.insertBefore(createDomElementFromVnode(newChildren[i]), beforeElement)
-           }
-       }
-   ```
-
-   ```js
-   
-   ```
-
-   
-
-
-
-
-
-
-
-## 3. 面试题
-
-1. MVMM
+1. MVMM原理
 
 2. DOM-diff
 3. 权限校验
