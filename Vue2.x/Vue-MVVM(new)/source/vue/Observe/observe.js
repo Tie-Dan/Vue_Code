@@ -43,9 +43,11 @@ export function defineReactive(data, key, value) {
     let childOb = observe(value) // 递归观察
     // 观察data
     let dep = new Dep()
+    console.log(111)
     Object.defineProperty(data, key, {
         get() {
             console.log('获取成功')
+
             if (Dep.target) {
                 //  dep.addSub(Dep.target) 
                 // 让dep存watcher 还希望让watcher存dep 实现多对多的关系

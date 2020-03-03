@@ -13,7 +13,7 @@
 - 安装webpack
 
   ```js
-  npm i webpack webpack-cli webpack-dev-server html-webpack-plugin --save-d
+  npm i webpack webpack-cli webpack-dev-server html-webpack-plugin --save
   ```
 
 - 配置webpack
@@ -78,25 +78,19 @@
    2. 观察数据
 
       ```js
+      // Observe/index.js
       // 6. 引入Observe.js
       import Observe from './observe'
       // 1. 初始化数据
       export function initState(vm) {
           // 2. 做不同的初始化工作
           let opts = vm.$options
-          if (opts.data) {
-              initData()
-          }
-          if (opts.computed) {
-              initComputed()
-          }
-          if (opts.wactch) {
-              initWatch()
-          }
+          if (opts.data) {initData()}
+          if (opts.computed) {initComputed()}
+          if (opts.watch) {initWatch()}
       }
-      
       export function observe(data) {
-      		// 5. 不是对象或者是null 直接return
+      		// 5. 不是对象或者是null 直接retur
           if (typeof data !== 'object' || data == null) {
               return 
           }
@@ -106,22 +100,18 @@
       function initData(vm) {
           // 3. 用户传入的data
           let data = vm.$options.data
-      
           // 4. 判断data是不是函数 把数据赋值给vm._data 方便观察
           data = vm._data = typeof data === 'function' ? data.call(vm) : data || {}
-      
           observe(data) // 观察数据
-      
       }
-      function initComputed() {
-      }
-      function initWatch() {
-      }
+      function initComputed() {}
+      function initWatch() {}
       ```
 
    3. 观察data
 
       ```js
+      // Observer/observe.js
       // 5. 引入观察函数
       import {observe} from './index'
       // 1.
@@ -145,9 +135,7 @@
           observe(value) // 递归观察
           // 4. 观察data
           Object.defineProperty(data, key, {
-              get() {
-                  return value
-              },
+              get() {return value},
               set(newValue) {
                   if (newValue === value) return
                 // 7. 如果你设置的值是一个对象的话 也要加一层监听
@@ -219,7 +207,7 @@
       import {arrayMethods} from './array';
       class Observe {
           constructor(data) { 
-            // 假如是数组把重写数组的方法挂到原型链上
+            // 7.假如是数组把重写数组的方法挂到原型链上
               if (Array.isArray(data)) {
                   data.__proto__ = arrayMethods
               } else {
@@ -272,16 +260,14 @@
       } else {
         this.walk(data)
       }
-      
+      ```
+
    注意: 什么样的数组不会被观察
       1.直接改数组的索引值 不能被检测到
       2.直接改length也不行
       因为数组长度变化 没有被监控
       [{a:1}] 内部会对数组里的对象进行监控
       [].push/shift/unshift 这些方法可以被监控 vm.$set内部调用就是数组的splice方法
-      ```
-      
-      
 
 3. 初始化渲染页面
 
@@ -363,6 +349,7 @@
 
       ```js
       // vue/index.js （vm._update的实现）
+      import { compiler } from './util'
       Vue.prototype._update = function () {
           // 拿到数据更新试图
           let vm = this
@@ -378,10 +365,9 @@
           // 替换完再放进去
           el.appendChild(node)
       }
-      ```
-
+   ```
+      
       ```js
-      import { compiler } from './util'
       // util.js 实现模版编译compiler方法 
       const defaultRE = /\{\{((?:.|\r?\n)+?)\}\}/g
       // 2.
@@ -395,7 +381,7 @@
               }, vm)
           },
         	// 3.
-          compilerText(node, vm) {
+          compilerText(node, vm) {  // 下面还得修改 用不用直接写
               // 编译文本 替换{{内容}}
               node.textContent = node.textContent.replace(defaultRE, function (...args) {
                   // 获取value
@@ -487,7 +473,10 @@
               get() {
                   // 2.判断防止单独调用observe
                   if (Dep.target) {
-                      // 让dep存watcher 还希望让watcher存dep 实现多对多的关系
+                     // 如果直接addSub(watcher) 更新的时候会造成重复更新
+                    //  还得让watcher记住那些属性依赖了我
+                    //  dep在这调用获取一样的属性会重复 得去重
+                    // 让dep存watcher 还希望让watcher存dep 实现多对多的关系
                    //  3. 在dep里面 把dep传到watcher 实现watcher过滤重复
                       dep.depend() 
                   }
@@ -557,11 +546,14 @@
 
    7. 批量更新防止重新渲染
 
-       ```js
+      ```js
       class Watcher {
           update() {
             // 1.
               // this.get() // 重复设置属性 会多次get刷新 同一个属性所以要批量操作 防止重复创新
+            // 每个属性创建的dep的时候要添加watcher 然后设置的时候调用update 去更新
+            // 这样的话会造成批量更新
+              console.log(this.id) // watcher id 都是一个
               queueWatcher(this)
           }
           run() {
@@ -579,14 +571,14 @@
       }
       // 2.
       function queueWatcher(watcher) {
-          let id = watcher.id
+          let id = watcher.id  // 因为现在的watcher 只有一个
           if (has[id] == null) { // 取不到值是undefined和null都是false
               has[id] = true
               queue.push(watcher)
           }
           // setTimeout(flusQueue, 0)
-          // 异步等待所有同步方法执行完毕 调用次方法
-          nextTick(flusQueue)
+          // 3 异步等待所有同步方法执行完毕 调用次方法
+       		 nextTick(flusQueue)
       }
       
       let callbacks = []
@@ -594,7 +586,7 @@
       function flushCallbacks() {
           callbacks.forEach(cb => cb())
       }
-      // 3.
+      // 3.1.
       // cb就是 flusQueue
       function nextTick(cb) {
           callbacks.push(cb) // 因为此方法可以单独调用 所有放到数组
@@ -627,6 +619,7 @@
    8. 数组方法的重新 只能实现了新增和修改属性的监听  没有实现每个属性的依赖收集
 
       ```js
+      // arr.push(100) vm变了但是没有更新
       //  现在只实现了对象的监听  还没有实现数组的监听
       //  observe.js 
       // 1. 给数组创建dep并且每个对象添加__ob__属性(Observer)   
@@ -642,26 +635,19 @@
       
       
       // 3. 拿到数组的dep   observe.js
-       // childOb 是返回数组的dep
-   let childOb = observe(value)
+    // childOb 是返回数组的dep
+      let childOb = observe(value)
        // get方法中判断 如果有数组的dep收集依赖
       if (childOb) {
         childOb.dep.depend(); // 数组也收集了当前渲染watcher
-         dependArray(value); // 收集儿子的依赖
-   }
-      ```
-      
-      ```js
-      // observe函数中判断有了直接返回
-      if (data.__ob__) { // 已经被监控过了
-        return data.__ob__
-   }
+      dependArray(value); // 收集儿子的依赖
+      }
       ```
       
       ```js
       // array.js 多维数组的收集
       // 递归多维数组 收集依赖
-      export function dependArray(value) {
+   export function dependArray(value) {
           for (let i = 0; i < value.length; i++) {
               let currentItem = value[i] // 有可能是一个多维数组
               currentItem.__ob__ && currentItem.__ob__.dep.depend();
@@ -669,6 +655,13 @@
                   dependArray(currentItem) // 递归收集多维数组中依赖关系
               }
           }
+      }
+      ```
+      
+      ```js
+      // observe函数中判断有了直接返回
+      if (data.__ob__) { // 已经被监控过了
+        return data.__ob__
       }
       ```
 
@@ -762,10 +755,11 @@
    ```
 
    ```js
-   // 2. 如果当前我们是计算属性的话 不会默认调用get方法  watcher.js
-   this.lazy = opts.lazy
+   // 2. 如果当前我们是计算属性的话 不会默认调用get方法  watcher.js 
+   this.lazy = opts.lazy // computed 有缓存
    this.dirty = this.lazy
-   this.value = this.lazy ? undefined : this.get(); // 默认创建的watcher会调用自身的get方法 渲染更新
+   this.value = this.lazy ? undefined : this.get(); 
+   //如果当前是计算属性的时候不会调用get方法 用的时候才会走
    
    // 4. 监听获取计算属性
    function createComputedGetter(vm, key) {
@@ -773,18 +767,17 @@
        let watcher = vm._watchersComputed[key]
        return function () {
            if (watcher) {
-              
                if (watcher.dirty) {
                 //5. 如果页面取值 而且dirty是true 就会去调用watcher的get方法
                    // 如果dirty 是fasle的话 不需要重新执行计算属性中的方法
                    watcher.evaluate()
                }
                //  9. watcher就是计算属性watcher 存用到用到属性dep相对应的watcher
-               if (Dep.target) {
+               if (Dep.target) {// 
                    watcher.depend()
                }
-             
-               return watcher.value
+               //6.1
+             return watcher.value
            }
        }
    }
@@ -794,7 +787,7 @@
    // 6. 获取到计算属性刷新  wacher.js
    evaluate() {
      this.value = this.get()
-     this.dirty = false;
+     this.dirty = false; // 值求过了 下次渲染的时候不用了 那什么时候再求哪啊 依赖的值发生变化了 走  updata方法
    }
    // 7. 获取返回值
    get() {
@@ -808,9 +801,9 @@
    ```js
    // 8. 
    update() {
-     // this.get() // 重复设置属性 会多次get刷新 同一个属性所以要批量操作 防止重复创新
-     if (this.lazy) { // 如果是计算属性是true  更新让this.dirty变成false
-       this.dirty = true
+     // this.get()  计算属性依赖的值发生了变化 稍后取值时重新计算即可
+     if (this.lazy) { // 如果是计算属性是true  更新让this.dirty变成true
+       this.dirty = true // 通知视图更新 但是 没有渲染watcher 所以走9 存watcher
      } else {
        queueWatcher(this)
      }
